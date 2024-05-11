@@ -1,9 +1,9 @@
 {
-	"name": "pl_SourceToBronz_CancerDB",
+	"name": "pl_SourceToBronz_CovidDB_copy1",
 	"properties": {
 		"activities": [
 			{
-				"name": "Cancerdb - from source to bronz",
+				"name": "Coviddb - from source to bronz",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -20,7 +20,7 @@
 			}
 		],
 		"folder": {
-			"name": "A-Bronz Pipelines"
+			"name": "C-Gold Pipelines"
 		},
 		"annotations": []
 	}

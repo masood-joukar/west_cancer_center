@@ -1,5 +1,5 @@
 {
-	"name": "pl_SourceToBronz_CancerDB",
+	"name": "pl_SourceToBronz_CancerDB_copy1",
 	"properties": {
 		"activities": [
 			{
@@ -20,7 +20,7 @@
 			}
 		],
 		"folder": {
-			"name": "A-Bronz Pipelines"
+			"name": "C-Gold Pipelines"
 		},
 		"annotations": []
 	}

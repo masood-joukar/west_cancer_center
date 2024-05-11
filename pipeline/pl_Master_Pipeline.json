@@ -12,7 +12,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "pl_Bronz",
+						"referenceName": "pl_SourceToBronz_CancerDB",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
@@ -34,10 +34,6 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "pl_Gold",
-						"type": "PipelineReference"
-					},
 					"waitOnCompletion": true
 				}
 			},
@@ -57,10 +53,6 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "pl_Silver",
-						"type": "PipelineReference"
-					},
 					"waitOnCompletion": true
 				}
 			}
