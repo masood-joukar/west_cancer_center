@@ -1,9 +1,9 @@
 {
-	"name": "pl_Master_Pipeline_CovidDB",
+	"name": "pl_Master_Pipeline_CancerDB",
 	"properties": {
 		"activities": [
 			{
-				"name": "pl_Bronz_copy1",
+				"name": "pl_Bronz",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"policy": {
@@ -19,11 +19,11 @@
 				}
 			},
 			{
-				"name": "pl_Gold_copy1",
+				"name": "pl_Gold",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "pl_Silver_copy1",
+						"activity": "pl_Silver",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -38,11 +38,11 @@
 				}
 			},
 			{
-				"name": "pl_Silver_copy1",
+				"name": "pl_Silver",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "pl_Bronz_copy1",
+						"activity": "pl_Bronz",
 						"dependencyConditions": [
 							"Succeeded"
 						]

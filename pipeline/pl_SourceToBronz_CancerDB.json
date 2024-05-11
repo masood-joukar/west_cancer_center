@@ -1,24 +1,6 @@
 {
 	"name": "pl_SourceToBronz_CancerDB",
 	"properties": {
-		"activities": [
-			{
-				"name": "Cancerdb - from source to bronz",
-				"type": "Copy",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"enableStaging": false
-				}
-			}
-		],
 		"folder": {
 			"name": "A-Bronz Pipelines"
 		},

@@ -1,0 +1,9 @@
+{
+	"name": "pl_BronzToSilver_CovidDB",
+	"properties": {
+		"folder": {
+			"name": "B-Silver Pipelines"
+		},
+		"annotations": []
+	}
+}
