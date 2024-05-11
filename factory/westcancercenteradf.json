@@ -1,0 +1,9 @@
+{
+	"name": "westcancercenteradf",
+	"location": "westeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "c25a28b9-a0e8-44ed-bbc5-b52b5572f085",
+		"tenantId": "1dc9b339-fadb-432e-86df-423c38a0fcb8"
+	}
+}
