@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "pl_Bronz",
+				"name": "pl_Bronz_CancerDB",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"policy": {
@@ -19,11 +19,11 @@
 				}
 			},
 			{
-				"name": "pl_Gold",
+				"name": "pl_Gold_CancerDB",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "pl_Silver",
+						"activity": "pl_Silver_CancerDB",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -34,15 +34,19 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_SilverToGold_CancerDB",
+						"type": "PipelineReference"
+					},
 					"waitOnCompletion": true
 				}
 			},
 			{
-				"name": "pl_Silver",
+				"name": "pl_Silver_CancerDB",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "pl_Bronz",
+						"activity": "pl_Bronz_CancerDB",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -53,6 +57,10 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_BronzToSilver_CancerDB",
+						"type": "PipelineReference"
+					},
 					"waitOnCompletion": true
 				}
 			}
