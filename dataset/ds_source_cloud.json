@@ -1,0 +1,27 @@
+{
+	"name": "ds_source_cloud",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_cloud_source",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "onprem"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "SalesQuotaKey;EmployeeKey;DateKey;SalesAmountQuota",
+				"type": "String"
+			}
+		]
+	}
+}
