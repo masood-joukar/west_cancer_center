@@ -1,5 +1,5 @@
 {
-	"name": "pl_raw_strctured",
+	"name": "pl_Bronz_To_Silver",
 	"properties": {
 		"activities": [
 			{
@@ -44,7 +44,7 @@
 			}
 		],
 		"folder": {
-			"name": "C-Raw-Strcutured"
+			"name": "C-Bronz-To-Silver"
 		},
 		"annotations": [],
 		"lastPublishTime": "2023-12-08T12:02:24Z"

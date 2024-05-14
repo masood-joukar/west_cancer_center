@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "A-Source-Landing",
+				"name": "Source_To_landing",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"policy": {
@@ -12,18 +12,18 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "pl_SalesDB_source_landing",
+						"referenceName": "pl_Source_To_landing",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
 				}
 			},
 			{
-				"name": "B-Landing-Raw",
+				"name": "Landing_To_Bronz",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "A-Source-Landing",
+						"activity": "Source_To_landing",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -35,18 +35,18 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "pl_landing_raw",
+						"referenceName": "pl_Landing_To_Bronz",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
 				}
 			},
 			{
-				"name": "C-Raw-Strcutured",
+				"name": "Bronz_To_Silver",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "B-Landing-Raw",
+						"activity": "Landing_To_Bronz",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -58,18 +58,18 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "pl_raw_strctured",
+						"referenceName": "pl_Bronz_To_Silver",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
 				}
 			},
 			{
-				"name": "D-Strcutured-Curated",
+				"name": "Silver_To_Gold",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "C-Raw-Strcutured",
+						"activity": "Bronz_To_Silver",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -81,7 +81,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "pl_strctured_curated",
+						"referenceName": "pl_Silver_To_Gold",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true

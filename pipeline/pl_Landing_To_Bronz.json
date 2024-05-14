@@ -1,5 +1,5 @@
 {
-	"name": "pl_landing_raw",
+	"name": "pl_Landing_To_Bronz",
 	"properties": {
 		"activities": [
 			{
@@ -44,7 +44,7 @@
 			}
 		],
 		"folder": {
-			"name": "B-Landing-Raw"
+			"name": "B-Landing-To-Bronz"
 		},
 		"annotations": [],
 		"lastPublishTime": "2023-12-08T12:02:23Z"

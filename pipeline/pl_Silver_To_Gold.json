@@ -1,5 +1,5 @@
 {
-	"name": "pl_strctured_curated",
+	"name": "pl_Silver_To_Gold",
 	"properties": {
 		"activities": [
 			{
@@ -24,7 +24,7 @@
 			}
 		],
 		"folder": {
-			"name": "D-Strcutured-Curated"
+			"name": "D-Silver-To-Gold"
 		},
 		"annotations": [],
 		"lastPublishTime": "2023-12-08T12:02:23Z"
