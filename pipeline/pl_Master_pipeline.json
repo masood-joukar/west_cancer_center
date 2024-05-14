@@ -1,0 +1,95 @@
+{
+	"name": "pl_Master_pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "A-Source-Landing",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_source_landing",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "B-Landing-Raw",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "A-Source-Landing",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_landing_raw",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "C-Raw-Strcutured",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "B-Landing-Raw",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_raw_strctured",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "D-Strcutured-Curated",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "C-Raw-Strcutured",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_strctured_curated",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2023-12-08T12:02:24Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

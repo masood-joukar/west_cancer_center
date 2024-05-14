@@ -1,0 +1,71 @@
+{
+	"name": "WWI",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"SchemaName": {
+				"type": "string",
+				"defaultValue": "Application"
+			},
+			"TableName": {
+				"type": "string",
+				"defaultValue": "vwCities"
+			}
+		},
+		"folder": {
+			"name": "Sources"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "CityID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CityName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "StateProvinceID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "LatestRecordedPopulation",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "LastEditedBy",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ValidFrom",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "ValidTo",
+				"type": "datetime2",
+				"scale": 7
+			}
+		],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().SchemaName",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().TableName",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

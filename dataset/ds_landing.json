@@ -1,0 +1,22 @@
+{
+	"name": "ds_landing",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_lakehouse",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "B-Landing"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "landing",
+				"fileSystem": "lakehouse"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

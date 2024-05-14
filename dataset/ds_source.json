@@ -1,0 +1,22 @@
+{
+	"name": "ds_source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_lakehouse",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "A-Source"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "source - in a real project there is no need for this directory. here it is used as there is no real data source",
+				"fileSystem": "lakehouse"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

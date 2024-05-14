@@ -1,0 +1,48 @@
+{
+	"name": "IngestParquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_lakehouse",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"ContainerName": {
+				"type": "string",
+				"defaultValue": "lakehouse"
+			},
+			"PathName": {
+				"type": "string",
+				"defaultValue": "landing/wideworldimporters"
+			},
+			"FileName": {
+				"type": "string",
+				"defaultValue": "Cities"
+			}
+		},
+		"folder": {
+			"name": "B-Landing"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().FileName",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().PathName",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().ContainerName",
+					"type": "Expression"
+				}
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

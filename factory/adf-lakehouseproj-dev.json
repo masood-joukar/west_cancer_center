@@ -1,0 +1,9 @@
+{
+	"name": "adf-lakehouseproj-dev",
+	"location": "westeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "c69793c9-abf6-4b39-9b8d-d938ebd88b42",
+		"tenantId": "1dc9b339-fadb-432e-86df-423c38a0fcb8"
+	}
+}

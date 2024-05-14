@@ -1,0 +1,32 @@
+{
+	"name": "LandingPath",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_lakehouse",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"ContainerName": {
+				"type": "string",
+				"defaultValue": "lakehouse"
+			},
+			"PathName": {
+				"type": "string",
+				"defaultValue": "landing/wideworldimporters"
+			}
+		},
+		"folder": {
+			"name": "B-Landing"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "landing/wideworldimporters",
+				"fileSystem": "lakehouse"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

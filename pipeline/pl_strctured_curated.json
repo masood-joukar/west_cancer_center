@@ -1,0 +1,33 @@
+{
+	"name": "pl_strctured_curated",
+	"properties": {
+		"activities": [
+			{
+				"name": "dataset1 data aggregation strctured_curated",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:10:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Repos/masood.joukar@softwareone.com/lakehouse/dbx/curated/Project: Sales Reporting/Sales Reporting Project_curated"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_WS",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "D-Strcutured-Curated"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-12-08T12:02:23Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,53 @@
+{
+	"name": "pl_landing_raw",
+	"properties": {
+		"activities": [
+			{
+				"name": "dataset1 data ingestion landing_raw",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:10:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Repos/masood.joukar@softwareone.com/lakehouse/dbx/raw/dataset1_raw"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_WS",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "dataset2 data ingestion landing_raw",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:10:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Repos/masood.joukar@softwareone.com/lakehouse/dbx/raw/dataset2_raw"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_WS",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "B-Landing-Raw"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-12-08T12:02:23Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

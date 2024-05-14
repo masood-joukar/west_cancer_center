@@ -1,0 +1,11 @@
+{
+	"name": "ls_lakehouse_keyvaults",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://keyvlt-lakehouseproj-dev.vault.azure.net/"
+		}
+	}
+}
