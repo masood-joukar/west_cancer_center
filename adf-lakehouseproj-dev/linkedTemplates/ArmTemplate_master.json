@@ -41,6 +41,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_cloud_source'"
 		},
+		"ls_landing_employees_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_landing_employees'"
+		},
 		"ls_DBXMainWS_properties_typeProperties_existingClusterId": {
 			"type": "string",
 			"defaultValue": "0513-185816-trjy3b4f"
@@ -74,6 +78,10 @@
 			"defaultValue": "DOMAIN\\masood.joukar"
 		},
 		"ls_cloud_source_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://lakelakehouseprojdev.dfs.core.windows.net/"
+		},
+		"ls_landing_employees_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://lakelakehouseprojdev.dfs.core.windows.net/"
 		},
@@ -122,6 +130,9 @@
 					"ls_cloud_source_accountKey": {
 						"value": "[parameters('ls_cloud_source_accountKey')]"
 					},
+					"ls_landing_employees_accountKey": {
+						"value": "[parameters('ls_landing_employees_accountKey')]"
+					},
 					"ls_on_prem_sql_connectionString": {
 						"value": "[parameters('ls_on_prem_sql_connectionString')]"
 					},
@@ -146,6 +157,9 @@
 					"ls_cloud_source_properties_typeProperties_url": {
 						"value": "[parameters('ls_cloud_source_properties_typeProperties_url')]"
 					},
+					"ls_landing_employees_properties_typeProperties_url": {
+						"value": "[parameters('ls_landing_employees_properties_typeProperties_url')]"
+					},
 					"ls_archive_properties_typeProperties_url": {
 						"value": "[parameters('ls_archive_properties_typeProperties_url')]"
 					},
@@ -158,6 +172,26 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "adf-lakehouseproj-dev_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'adf-lakehouseproj-dev_ArmTemplate_0')]"
+			]
 		}
 	]
 }

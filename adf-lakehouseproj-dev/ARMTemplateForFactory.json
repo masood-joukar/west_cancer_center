@@ -41,6 +41,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_cloud_source'"
 		},
+		"ls_landing_employees_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_landing_employees'"
+		},
 		"ls_DBXMainWS_properties_typeProperties_existingClusterId": {
 			"type": "string",
 			"defaultValue": "0513-185816-trjy3b4f"
@@ -74,6 +78,10 @@
 			"defaultValue": "DOMAIN\\masood.joukar"
 		},
 		"ls_cloud_source_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://lakelakehouseprojdev.dfs.core.windows.net/"
+		},
+		"ls_landing_employees_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://lakelakehouseprojdev.dfs.core.windows.net/"
 		}
@@ -415,7 +423,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "ds_lakehouse_landing",
+								"referenceName": "ds_landing_employee",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -494,8 +502,9 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_sql_onPrem')]",
-				"[concat(variables('factoryId'), '/datasets/ds_lakehouse_landing')]",
-				"[concat(variables('factoryId'), '/datasets/ds_source_cloud')]"
+				"[concat(variables('factoryId'), '/datasets/ds_landing_employee')]",
+				"[concat(variables('factoryId'), '/datasets/ds_source_cloud')]",
+				"[concat(variables('factoryId'), '/datasets/ds_lakehouse_landing')]"
 			]
 		},
 		{
@@ -912,6 +921,51 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_cloud_source')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_landing_employees')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('ls_landing_employees_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('ls_landing_employees_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_landing_employee')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_landing_employees",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "landing/Employees_DB",
+						"fileSystem": "lakehouse"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_landing_employees')]"
 			]
 		}
 	]

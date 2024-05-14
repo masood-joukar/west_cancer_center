@@ -29,6 +29,9 @@
 		"ls_cloud_source_accountKey": {
 			"value": ""
 		},
+		"ls_landing_employees_accountKey": {
+			"value": ""
+		},
 		"ls_DBXMainWS_properties_typeProperties_existingClusterId": {
 			"value": "0513-185816-trjy3b4f"
 		},
@@ -54,6 +57,9 @@
 			"value": "DOMAIN\\masood.joukar"
 		},
 		"ls_cloud_source_properties_typeProperties_url": {
+			"value": "https://lakelakehouseprojdev.dfs.core.windows.net/"
+		},
+		"ls_landing_employees_properties_typeProperties_url": {
 			"value": "https://lakelakehouseprojdev.dfs.core.windows.net/"
 		},
 		"containerUri": {
