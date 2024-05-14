@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "nb_EmployeesDB_Landing_Bronz",
+				"name": "EmployeesDB Landing-To-Bronz",
 				"type": "DatabricksNotebook",
 				"dependsOn": [],
 				"policy": {
@@ -15,15 +15,15 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Repos/masood.joukar@softwareone.com/lakehouse/dbx/raw/dataset1_raw"
+					"notebookPath": "/West Cancer Center/Bronz/Bronz_EmployeesDB"
 				},
 				"linkedServiceName": {
-					"referenceName": "ls_databricks_WS",
+					"referenceName": "ls_DBXMainWS",
 					"type": "LinkedServiceReference"
 				}
 			},
 			{
-				"name": "nb_SalesDB_Landing_Bronz",
+				"name": "SalesDB Landing-To-Bronzo",
 				"type": "DatabricksNotebook",
 				"dependsOn": [],
 				"policy": {
