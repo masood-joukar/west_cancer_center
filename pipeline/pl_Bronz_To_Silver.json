@@ -1,0 +1,53 @@
+{
+	"name": "pl_Bronz_To_Silver",
+	"properties": {
+		"activities": [
+			{
+				"name": "EmployeesDB Landing-To-Bronz",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:10:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/West Cancer Center/Bronz/Bronz_EmployeesDB"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_DBXMainWS",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "SalesDB Landing-To-Bronz",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:10:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/West Cancer Center/Bronz/Bronz _SalesDB"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_DBXMainWS",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "C-Bronz-To-Silver"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-12-08T12:02:23Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
