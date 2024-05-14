@@ -23,7 +23,7 @@
 				}
 			},
 			{
-				"name": "SalesDB Landing-To-Bronzo",
+				"name": "SalesDB Landing-To-Bronz",
 				"type": "DatabricksNotebook",
 				"dependsOn": [],
 				"policy": {
@@ -35,10 +35,10 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Repos/masood.joukar@softwareone.com/lakehouse/dbx/raw/dataset2_raw"
+					"notebookPath": "/West Cancer Center/Bronz/Bronz _SalesDB"
 				},
 				"linkedServiceName": {
-					"referenceName": "ls_databricks_WS",
+					"referenceName": "ls_DBXMainWS",
 					"type": "LinkedServiceReference"
 				}
 			}
