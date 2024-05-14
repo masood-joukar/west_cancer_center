@@ -8,7 +8,13 @@
 		"AzureSqlDatabase1_connectionString": {
 			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=swo-appsvc-dwh-sql-dev.database.windows.net;Initial Catalog=WideWorldImporters"
 		},
+		"ls_DBXMainWS_accessToken": {
+			"value": ""
+		},
 		"ls_lake_bronz_accountKey": {
+			"value": ""
+		},
+		"ls_lakehouse_landing_accountKey": {
 			"value": ""
 		},
 		"ls_on_prem_sql_connectionString": {
@@ -20,11 +26,8 @@
 		"ls_source_connectionString": {
 			"value": ""
 		},
-		"ls_lakehouse_landing_accountKey": {
-			"value": ""
-		},
-		"ls_DBXMainWS_accessToken": {
-			"value": ""
+		"ls_DBXMainWS_properties_typeProperties_existingClusterId": {
+			"value": "0513-185816-trjy3b4f"
 		},
 		"ls_archive_properties_typeProperties_url": {
 			"value": "https://archivelakehouseprojdev.dfs.core.windows.net/"
@@ -41,14 +44,11 @@
 		"ls_lakehouse_keyvaults_properties_typeProperties_baseUrl": {
 			"value": "https://keyvlt-lakehouseproj-dev.vault.azure.net/"
 		},
-		"ls_on_prem_sql_properties_typeProperties_userName": {
-			"value": "DOMAIN\\masood.joukar"
-		},
 		"ls_lakehouse_landing_properties_typeProperties_url": {
 			"value": "https://lakelakehouseprojdev.dfs.core.windows.net/"
 		},
-		"ls_DBXMainWS_properties_typeProperties_existingClusterId": {
-			"value": "0513-185816-trjy3b4f"
+		"ls_on_prem_sql_properties_typeProperties_userName": {
+			"value": "DOMAIN\\masood.joukar"
 		}
 	}
 }
