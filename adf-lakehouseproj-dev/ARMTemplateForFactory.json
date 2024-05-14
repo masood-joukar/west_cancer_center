@@ -73,7 +73,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "A-Source-Landing",
+						"name": "Source_To_landing",
 						"type": "ExecutePipeline",
 						"dependsOn": [],
 						"policy": {
@@ -82,7 +82,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "pl_SalesDB_source_landing",
+								"referenceName": "pl_Source_To_landing",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -90,11 +90,11 @@
 						}
 					},
 					{
-						"name": "B-Landing-Raw",
+						"name": "Landing_To_Bronz",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "A-Source-Landing",
+								"activity": "Source_To_landing",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -106,7 +106,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "pl_landing_raw",
+								"referenceName": "pl_Landing_To_Bronz",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -114,11 +114,11 @@
 						}
 					},
 					{
-						"name": "C-Raw-Strcutured",
+						"name": "Bronz_To_Silver",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "B-Landing-Raw",
+								"activity": "Landing_To_Bronz",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -130,7 +130,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "pl_raw_strctured",
+								"referenceName": "pl_Bronz_To_Silver",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -138,11 +138,11 @@
 						}
 					},
 					{
-						"name": "D-Strcutured-Curated",
+						"name": "Silver_To_Gold",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "C-Raw-Strcutured",
+								"activity": "Bronz_To_Silver",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -154,7 +154,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "pl_strctured_curated",
+								"referenceName": "pl_Silver_To_Gold",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -169,14 +169,14 @@
 				"lastPublishTime": "2023-12-08T12:02:24Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pl_SalesDB_source_landing')]",
-				"[concat(variables('factoryId'), '/pipelines/pl_landing_raw')]",
-				"[concat(variables('factoryId'), '/pipelines/pl_raw_strctured')]",
-				"[concat(variables('factoryId'), '/pipelines/pl_strctured_curated')]"
+				"[concat(variables('factoryId'), '/pipelines/pl_Source_To_landing')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_Landing_To_Bronz')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_Bronz_To_Silver')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_Silver_To_Gold')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_landing_raw')]",
+			"name": "[concat(parameters('factoryName'), '/pl_Landing_To_Bronz')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -226,7 +226,7 @@
 					"elapsedTimeMetric": {}
 				},
 				"folder": {
-					"name": "B-Landing-Raw"
+					"name": "B-Landing-To-Bronz"
 				},
 				"annotations": [],
 				"lastPublishTime": "2023-12-08T12:02:23Z"
@@ -236,7 +236,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_raw_strctured')]",
+			"name": "[concat(parameters('factoryName'), '/pl_Bronz_To_Silver')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -286,7 +286,7 @@
 					"elapsedTimeMetric": {}
 				},
 				"folder": {
-					"name": "C-Raw-Strcutured"
+					"name": "C-Bronz-To-Silver"
 				},
 				"annotations": [],
 				"lastPublishTime": "2023-12-08T12:02:24Z"
@@ -296,7 +296,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_SalesDB_source_landing')]",
+			"name": "[concat(parameters('factoryName'), '/pl_Source_To_landing')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -425,7 +425,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_strctured_curated')]",
+			"name": "[concat(parameters('factoryName'), '/pl_Silver_To_Gold')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -455,7 +455,7 @@
 					"elapsedTimeMetric": {}
 				},
 				"folder": {
-					"name": "D-Strcutured-Curated"
+					"name": "D-Silver-To-Gold"
 				},
 				"annotations": [],
 				"lastPublishTime": "2023-12-08T12:02:23Z"
