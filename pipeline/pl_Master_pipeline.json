@@ -76,10 +76,6 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "pl_Silver_To_Gold",
-						"type": "PipelineReference"
-					},
 					"waitOnCompletion": true
 				}
 			}
