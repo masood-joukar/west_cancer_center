@@ -29,6 +29,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_source'"
 		},
+		"ls_lakehouse_landing_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_lakehouse_landing'"
+		},
 		"ls_archive_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://archivelakehouseprojdev.dfs.core.windows.net/"
@@ -52,6 +56,10 @@
 		"ls_on_prem_sql_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "DOMAIN\\masood.joukar"
+		},
+		"ls_lakehouse_landing_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://lakelakehouseprojdev.dfs.core.windows.net/"
 		}
 	},
 	"variables": {
@@ -74,7 +82,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "pl_source_landing",
+								"referenceName": "pl_SalesDB_source_landing",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -161,7 +169,7 @@
 				"lastPublishTime": "2023-12-08T12:02:24Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pl_source_landing')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_SalesDB_source_landing')]",
 				"[concat(variables('factoryId'), '/pipelines/pl_landing_raw')]",
 				"[concat(variables('factoryId'), '/pipelines/pl_raw_strctured')]",
 				"[concat(variables('factoryId'), '/pipelines/pl_strctured_curated')]"
@@ -288,13 +296,13 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_source_landing')]",
+			"name": "[concat(parameters('factoryName'), '/pl_SalesDB_source_landing')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "dataset2 ingestion from source to landing",
+						"name": "pl_EmployeesDB_source_landing",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -307,42 +315,48 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "BinarySource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"wildcardFileName": "Sales.csv",
-									"deleteFilesAfterCompletion": false
-								},
-								"formatSettings": {
-									"type": "BinaryReadSettings"
-								}
+								"type": "SqlServerSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
 							},
 							"sink": {
-								"type": "BinarySink",
+								"type": "DelimitedTextSink",
 								"storeSettings": {
 									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
 								}
 							},
-							"enableStaging": false
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
 						},
 						"inputs": [
 							{
-								"referenceName": "ds_source",
+								"referenceName": "ds_sql_onPrem",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
 						],
 						"outputs": [
 							{
-								"referenceName": "ds_landing",
+								"referenceName": "ds_lakehouse_landing",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
 						]
 					},
 					{
-						"name": "dataset1 ingestion from source to landing_copy1",
+						"name": "pl_SalesDB_source_landing",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -355,35 +369,41 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "BinarySource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"wildcardFileName": "Employees.csv",
-									"deleteFilesAfterCompletion": false
-								},
-								"formatSettings": {
-									"type": "BinaryReadSettings"
-								}
+								"type": "SqlServerSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
 							},
 							"sink": {
-								"type": "BinarySink",
+								"type": "DelimitedTextSink",
 								"storeSettings": {
 									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
 								}
 							},
-							"enableStaging": false
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
 						},
 						"inputs": [
 							{
-								"referenceName": "ds_source",
+								"referenceName": "ds_sql_onPrem",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
 						],
 						"outputs": [
 							{
-								"referenceName": "ds_landing",
+								"referenceName": "ds_lakehouse_landing",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -400,8 +420,8 @@
 				"lastPublishTime": "2023-12-08T12:02:24Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ds_source')]",
-				"[concat(variables('factoryId'), '/datasets/ds_landing')]"
+				"[concat(variables('factoryId'), '/datasets/ds_sql_onPrem')]",
+				"[concat(variables('factoryId'), '/datasets/ds_lakehouse_landing')]"
 			]
 		},
 		{
@@ -442,214 +462,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_databricks_WS')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/IngestConfig')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_lakehouse",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Config"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "WWI_IngestConfig.json",
-						"fileSystem": "adfconfig"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"SrcSchemaName": {
-							"type": "string"
-						},
-						"SrcTableName": {
-							"type": "string"
-						},
-						"TrgtTableName": {
-							"type": "string"
-						},
-						"IsActive": {
-							"type": "boolean"
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_lakehouse')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/IngestParquet')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_lakehouse",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"ContainerName": {
-						"type": "string",
-						"defaultValue": "lakehouse"
-					},
-					"PathName": {
-						"type": "string",
-						"defaultValue": "landing/wideworldimporters"
-					},
-					"FileName": {
-						"type": "string",
-						"defaultValue": "Cities"
-					}
-				},
-				"folder": {
-					"name": "B-Landing"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@dataset().FileName",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@dataset().PathName",
-							"type": "Expression"
-						},
-						"fileSystem": {
-							"value": "@dataset().ContainerName",
-							"type": "Expression"
-						}
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_lakehouse')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/LandingPath')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_lakehouse",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"ContainerName": {
-						"type": "string",
-						"defaultValue": "lakehouse"
-					},
-					"PathName": {
-						"type": "string",
-						"defaultValue": "landing/wideworldimporters"
-					}
-				},
-				"folder": {
-					"name": "B-Landing"
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "landing/wideworldimporters",
-						"fileSystem": "lakehouse"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_lakehouse')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ds_archive')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_archive",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "C-Archive"
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileSystem": "archive"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_archive')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ds_landing')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_lakehouse",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "B-Landing"
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "landing",
-						"fileSystem": "lakehouse"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_lakehouse')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ds_source')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_lakehouse",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "A-Source"
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "source - in a real project there is no need for this directory. here it is used as there is no real data source",
-						"fileSystem": "lakehouse"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_lakehouse')]"
 			]
 		},
 		{
@@ -801,6 +613,205 @@
 				"typeProperties": {}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_sql_onPrem')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_on_prem_sql",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [
+					{
+						"name": "EmployeeKey",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ParentEmployeeKey",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "EmployeeNationalIDAlternateKey",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ParentEmployeeNationalIDAlternateKey",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SalesTerritoryKey",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "FirstName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LastName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MiddleName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NameStyle",
+						"type": "bit"
+					},
+					{
+						"name": "Title",
+						"type": "nvarchar"
+					},
+					{
+						"name": "HireDate",
+						"type": "date"
+					},
+					{
+						"name": "BirthDate",
+						"type": "date"
+					},
+					{
+						"name": "LoginID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EmailAddress",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Phone",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MaritalStatus",
+						"type": "nchar"
+					},
+					{
+						"name": "EmergencyContactName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EmergencyContactPhone",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SalariedFlag",
+						"type": "bit"
+					},
+					{
+						"name": "Gender",
+						"type": "nchar"
+					},
+					{
+						"name": "PayFrequency",
+						"type": "tinyint",
+						"precision": 3
+					},
+					{
+						"name": "BaseRate",
+						"type": "money",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "VacationHours",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "SickLeaveHours",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "CurrentFlag",
+						"type": "bit"
+					},
+					{
+						"name": "SalesPersonFlag",
+						"type": "bit"
+					},
+					{
+						"name": "DepartmentName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "StartDate",
+						"type": "date"
+					},
+					{
+						"name": "EndDate",
+						"type": "date"
+					},
+					{
+						"name": "Status",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EmployeePhoto",
+						"type": "varbinary"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "FactSalesQuota"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_on_prem_sql')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_lakehouse_landing')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('ls_lakehouse_landing_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('ls_lakehouse_landing_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_lakehouse_landing')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_lakehouse_landing",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "landing/Sales_DB",
+						"fileSystem": "lakehouse"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_lakehouse_landing')]"
+			]
 		}
 	]
 }

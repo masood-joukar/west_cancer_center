@@ -20,6 +20,9 @@
 		"ls_source_connectionString": {
 			"value": ""
 		},
+		"ls_lakehouse_landing_accountKey": {
+			"value": ""
+		},
 		"ls_archive_properties_typeProperties_url": {
 			"value": "https://archivelakehouseprojdev.dfs.core.windows.net/"
 		},
@@ -37,6 +40,9 @@
 		},
 		"ls_on_prem_sql_properties_typeProperties_userName": {
 			"value": "DOMAIN\\masood.joukar"
+		},
+		"ls_lakehouse_landing_properties_typeProperties_url": {
+			"value": "https://lakelakehouseprojdev.dfs.core.windows.net/"
 		},
 		"containerUri": {
 			"value": ""
