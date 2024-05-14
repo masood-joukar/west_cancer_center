@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "HR Report Use-Case",
+				"name": "HR Report Use-Case_Gold",
 				"type": "DatabricksNotebook",
 				"dependsOn": [],
 				"policy": {
@@ -23,7 +23,7 @@
 				}
 			},
 			{
-				"name": "Sales ML Use-Case",
+				"name": "Sales ML Use-Case_Gold",
 				"type": "DatabricksNotebook",
 				"dependsOn": [],
 				"policy": {
