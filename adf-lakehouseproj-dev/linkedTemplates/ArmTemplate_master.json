@@ -16,6 +16,15 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_lake_bronz'"
 		},
+		"ls_on_prem_sql_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_on_prem_sql'",
+			"defaultValue": "Integrated Security=True;Data Source=SWO027150613857\\MSSQLSERVER2022;Initial Catalog=AdventureWorksDW2019"
+		},
+		"ls_on_prem_sql_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'ls_on_prem_sql'"
+		},
 		"ls_source_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_source'"
@@ -39,6 +48,10 @@
 		"ls_lakehouse_keyvaults_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://keyvlt-lakehouseproj-dev.vault.azure.net/"
+		},
+		"ls_on_prem_sql_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "DOMAIN\\masood.joukar"
 		},
 		"containerUri": {
 			"type": "string",
@@ -76,6 +89,12 @@
 					"ls_source_connectionString": {
 						"value": "[parameters('ls_source_connectionString')]"
 					},
+					"ls_on_prem_sql_connectionString": {
+						"value": "[parameters('ls_on_prem_sql_connectionString')]"
+					},
+					"ls_on_prem_sql_password": {
+						"value": "[parameters('ls_on_prem_sql_password')]"
+					},
 					"ls_lake_bronz_properties_typeProperties_url": {
 						"value": "[parameters('ls_lake_bronz_properties_typeProperties_url')]"
 					},
@@ -90,30 +109,13 @@
 					},
 					"ls_databricks_WS_properties_typeProperties_existingClusterId": {
 						"value": "[parameters('ls_databricks_WS_properties_typeProperties_existingClusterId')]"
+					},
+					"ls_on_prem_sql_properties_typeProperties_userName": {
+						"value": "[parameters('ls_on_prem_sql_properties_typeProperties_userName')]"
 					}
 				}
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "adf-lakehouseproj-dev_ArmTemplate_1",
-			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2018-02-01",
-			"properties": {
-				"mode": "incremental",
-				"templateLink": {
-					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
-					"contentVersion": "1.0.0.0"
-				},
-				"parameters": {
-					"factoryName": {
-						"value": "[parameters('factoryName')]"
-					}
-				}
-			},
-			"dependsOn": [
-				"[resourceId('Microsoft.Resources/deployments', 'adf-lakehouseproj-dev_ArmTemplate_0')]"
-			]
 		}
 	]
 }

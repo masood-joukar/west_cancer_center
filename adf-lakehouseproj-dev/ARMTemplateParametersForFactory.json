@@ -11,6 +11,12 @@
 		"ls_lake_bronz_accountKey": {
 			"value": ""
 		},
+		"ls_on_prem_sql_connectionString": {
+			"value": "Integrated Security=True;Data Source=SWO027150613857\\MSSQLSERVER2022;Initial Catalog=AdventureWorksDW2019"
+		},
+		"ls_on_prem_sql_password": {
+			"value": ""
+		},
 		"ls_source_connectionString": {
 			"value": ""
 		},
@@ -28,6 +34,9 @@
 		},
 		"ls_lakehouse_keyvaults_properties_typeProperties_baseUrl": {
 			"value": "https://keyvlt-lakehouseproj-dev.vault.azure.net/"
+		},
+		"ls_on_prem_sql_properties_typeProperties_userName": {
+			"value": "DOMAIN\\masood.joukar"
 		}
 	}
 }

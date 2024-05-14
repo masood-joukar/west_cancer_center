@@ -20,6 +20,15 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_source'"
 		},
+		"ls_on_prem_sql_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_on_prem_sql'",
+			"defaultValue": "Integrated Security=True;Data Source=SWO027150613857\\MSSQLSERVER2022;Initial Catalog=AdventureWorksDW2019"
+		},
+		"ls_on_prem_sql_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'ls_on_prem_sql'"
+		},
 		"ls_lake_bronz_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://westcancercenterstorage.dfs.core.windows.net/"
@@ -39,6 +48,10 @@
 		"ls_databricks_WS_properties_typeProperties_existingClusterId": {
 			"type": "string",
 			"defaultValue": "1202-084555-aaqmz7am"
+		},
+		"ls_on_prem_sql_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "DOMAIN\\masood.joukar"
 		}
 	},
 	"variables": {
@@ -123,29 +136,6 @@
 				"typeProperties": {}
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Bronz_CovidDB')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_lake_bronz",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "coviddb_bronz",
-						"fileSystem": "bronz"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_lake_bronz')]"
-			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/IngestConfig')]",
@@ -279,103 +269,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Source_Covid_DB')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_source",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"container": "coviddb"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_source')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/WWI')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"SchemaName": {
-						"type": "string",
-						"defaultValue": "Application"
-					},
-					"TableName": {
-						"type": "string",
-						"defaultValue": "vwCities"
-					}
-				},
-				"folder": {
-					"name": "Sources"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "CityID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "CityName",
-						"type": "nvarchar"
-					},
-					{
-						"name": "StateProvinceID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "LatestRecordedPopulation",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "LastEditedBy",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "ValidFrom",
-						"type": "datetime2",
-						"scale": 7
-					},
-					{
-						"name": "ValidTo",
-						"type": "datetime2",
-						"scale": 7
-					}
-				],
-				"typeProperties": {
-					"schema": {
-						"value": "@dataset().SchemaName",
-						"type": "Expression"
-					},
-					"table": {
-						"value": "@dataset().TableName",
-						"type": "Expression"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/ds_landing')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -475,259 +368,27 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pipe_01_IngestWWI')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
+			"name": "[concat(parameters('factoryName'), '/ls_on_prem_sql')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"activities": [
-					{
-						"name": "Set CurrentTimestamp",
-						"type": "SetVariable",
-						"dependsOn": [],
-						"policy": {
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "CurrentTimestamp",
-							"value": {
-								"value": "@formatDateTime(utcNow(), 'yyyyMMddhhmmss')",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Get IngestConfig",
-						"type": "Lookup",
-						"dependsOn": [
-							{
-								"activity": "Set CurrentTimestamp",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "JsonSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": false,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "JsonReadSettings"
-								}
-							},
-							"dataset": {
-								"referenceName": "IngestConfig",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "IsActive",
-						"type": "Filter",
-						"dependsOn": [
-							{
-								"activity": "Get IngestConfig",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('Get IngestConfig').output.value",
-								"type": "Expression"
-							},
-							"condition": {
-								"value": "@item().isActive",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "ForEach Source Table",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "IsActive",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('IsActive').output.Value",
-								"type": "Expression"
-							},
-							"batchCount": 4,
-							"activities": [
-								{
-									"name": "Copy source table",
-									"type": "Copy",
-									"dependsOn": [
-										{
-											"activity": "Delete Destination Files",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "AzureSqlSource",
-											"additionalColumns": [
-												{
-													"name": "Meta_InsertDatetimeUTC",
-													"value": {
-														"value": "@formatDateTime(utcNow(),'yyyy-MM-ddTHH:mm:ssZ')",
-														"type": "Expression"
-													}
-												},
-												{
-													"name": "Meta_SourceSystem",
-													"value": {
-														"value": "WWI",
-														"type": "Expression"
-													}
-												}
-											],
-											"queryTimeout": "02:00:00",
-											"partitionOption": "None"
-										},
-										"sink": {
-											"type": "ParquetSink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings",
-												"copyBehavior": "FlattenHierarchy"
-											},
-											"formatSettings": {
-												"type": "ParquetWriteSettings"
-											}
-										},
-										"enableStaging": false,
-										"translator": {
-											"type": "TabularTranslator",
-											"typeConversion": true,
-											"typeConversionSettings": {
-												"allowDataTruncation": true,
-												"treatBooleanAsNumber": false
-											}
-										}
-									},
-									"inputs": [
-										{
-											"referenceName": "WWI",
-											"type": "DatasetReference",
-											"parameters": {
-												"SchemaName": {
-													"value": "@item().SrcSchemaName",
-													"type": "Expression"
-												},
-												"TableName": {
-													"value": "@item().SrcTableName",
-													"type": "Expression"
-												}
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "IngestParquet",
-											"type": "DatasetReference",
-											"parameters": {
-												"ContainerName": "lakehouse",
-												"PathName": {
-													"value": "@concat('landing/wideworldimporters/',item().TrgtTableName)",
-													"type": "Expression"
-												},
-												"FileName": {
-													"value": "@concat(item().TrgtTableName,'_',variables('CurrentTimestamp'))",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								},
-								{
-									"name": "Delete Destination Files",
-									"type": "Delete",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"dataset": {
-											"referenceName": "LandingPath",
-											"type": "DatasetReference",
-											"parameters": {
-												"ContainerName": "lakehouse",
-												"PathName": {
-													"value": "@concat('landing/wideworldimporters/', item().TrgtTableName)",
-													"type": "Expression"
-												}
-											}
-										},
-										"enableLogging": false,
-										"storeSettings": {
-											"type": "AzureBlobFSReadSettings",
-											"recursive": true,
-											"enablePartitionDiscovery": false
-										}
-									}
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"variables": {
-					"CurrentTimestamp": {
-						"type": "String"
-					}
-				},
-				"folder": {
-					"name": "A-Source-Landing/WWI"
-				},
 				"annotations": [],
-				"lastPublishTime": "2023-12-08T15:13:03Z"
+				"type": "SqlServer",
+				"typeProperties": {
+					"connectionString": "[parameters('ls_on_prem_sql_connectionString')]",
+					"userName": "[parameters('ls_on_prem_sql_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('ls_on_prem_sql_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "SHIR",
+					"type": "IntegrationRuntimeReference"
+				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/IngestConfig')]",
-				"[concat(variables('factoryId'), '/datasets/WWI')]",
-				"[concat(variables('factoryId'), '/datasets/IngestParquet')]",
-				"[concat(variables('factoryId'), '/datasets/LandingPath')]"
+				"[concat(variables('factoryId'), '/integrationRuntimes/SHIR')]"
 			]
 		},
 		{
@@ -965,6 +626,180 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_source')]",
 				"[concat(variables('factoryId'), '/datasets/ds_landing')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_strctured_curated')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "dataset1 data aggregation strctured_curated",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.00:10:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Repos/masood.joukar@softwareone.com/lakehouse/dbx/curated/Project: Sales Reporting/Sales Reporting Project_curated"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_databricks_WS",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "D-Strcutured-Curated"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-12-08T12:02:23Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_databricks_WS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_archive')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_archive",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "C-Archive"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "archive"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_archive')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_Master_pipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "A-Source-Landing",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_source_landing",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "B-Landing-Raw",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "A-Source-Landing",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_landing_raw",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "C-Raw-Strcutured",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "B-Landing-Raw",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_raw_strctured",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "D-Strcutured-Curated",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "C-Raw-Strcutured",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_strctured_curated",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-12-08T12:02:24Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pl_source_landing')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_landing_raw')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_raw_strctured')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_strctured_curated')]"
 			]
 		}
 	]

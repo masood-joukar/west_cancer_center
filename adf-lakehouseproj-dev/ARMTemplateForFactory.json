@@ -16,6 +16,15 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_lake_bronz'"
 		},
+		"ls_on_prem_sql_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_on_prem_sql'",
+			"defaultValue": "Integrated Security=True;Data Source=SWO027150613857\\MSSQLSERVER2022;Initial Catalog=AdventureWorksDW2019"
+		},
+		"ls_on_prem_sql_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'ls_on_prem_sql'"
+		},
 		"ls_source_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_source'"
@@ -39,268 +48,16 @@
 		"ls_lakehouse_keyvaults_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://keyvlt-lakehouseproj-dev.vault.azure.net/"
+		},
+		"ls_on_prem_sql_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "DOMAIN\\masood.joukar"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('factoryName'), '/pipe_01_IngestWWI')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Set CurrentTimestamp",
-						"type": "SetVariable",
-						"dependsOn": [],
-						"policy": {
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "CurrentTimestamp",
-							"value": {
-								"value": "@formatDateTime(utcNow(), 'yyyyMMddhhmmss')",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Get IngestConfig",
-						"type": "Lookup",
-						"dependsOn": [
-							{
-								"activity": "Set CurrentTimestamp",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "JsonSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": false,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "JsonReadSettings"
-								}
-							},
-							"dataset": {
-								"referenceName": "IngestConfig",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "IsActive",
-						"type": "Filter",
-						"dependsOn": [
-							{
-								"activity": "Get IngestConfig",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('Get IngestConfig').output.value",
-								"type": "Expression"
-							},
-							"condition": {
-								"value": "@item().isActive",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "ForEach Source Table",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "IsActive",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('IsActive').output.Value",
-								"type": "Expression"
-							},
-							"batchCount": 4,
-							"activities": [
-								{
-									"name": "Copy source table",
-									"type": "Copy",
-									"dependsOn": [
-										{
-											"activity": "Delete Destination Files",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "AzureSqlSource",
-											"additionalColumns": [
-												{
-													"name": "Meta_InsertDatetimeUTC",
-													"value": {
-														"value": "@formatDateTime(utcNow(),'yyyy-MM-ddTHH:mm:ssZ')",
-														"type": "Expression"
-													}
-												},
-												{
-													"name": "Meta_SourceSystem",
-													"value": {
-														"value": "WWI",
-														"type": "Expression"
-													}
-												}
-											],
-											"queryTimeout": "02:00:00",
-											"partitionOption": "None"
-										},
-										"sink": {
-											"type": "ParquetSink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings",
-												"copyBehavior": "FlattenHierarchy"
-											},
-											"formatSettings": {
-												"type": "ParquetWriteSettings"
-											}
-										},
-										"enableStaging": false,
-										"translator": {
-											"type": "TabularTranslator",
-											"typeConversion": true,
-											"typeConversionSettings": {
-												"allowDataTruncation": true,
-												"treatBooleanAsNumber": false
-											}
-										}
-									},
-									"inputs": [
-										{
-											"referenceName": "WWI",
-											"type": "DatasetReference",
-											"parameters": {
-												"SchemaName": {
-													"value": "@item().SrcSchemaName",
-													"type": "Expression"
-												},
-												"TableName": {
-													"value": "@item().SrcTableName",
-													"type": "Expression"
-												}
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "IngestParquet",
-											"type": "DatasetReference",
-											"parameters": {
-												"ContainerName": "lakehouse",
-												"PathName": {
-													"value": "@concat('landing/wideworldimporters/',item().TrgtTableName)",
-													"type": "Expression"
-												},
-												"FileName": {
-													"value": "@concat(item().TrgtTableName,'_',variables('CurrentTimestamp'))",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								},
-								{
-									"name": "Delete Destination Files",
-									"type": "Delete",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"dataset": {
-											"referenceName": "LandingPath",
-											"type": "DatasetReference",
-											"parameters": {
-												"ContainerName": "lakehouse",
-												"PathName": {
-													"value": "@concat('landing/wideworldimporters/', item().TrgtTableName)",
-													"type": "Expression"
-												}
-											}
-										},
-										"enableLogging": false,
-										"storeSettings": {
-											"type": "AzureBlobFSReadSettings",
-											"recursive": true,
-											"enablePartitionDiscovery": false
-										}
-									}
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"variables": {
-					"CurrentTimestamp": {
-						"type": "String"
-					}
-				},
-				"folder": {
-					"name": "A-Source-Landing/WWI"
-				},
-				"annotations": [],
-				"lastPublishTime": "2023-12-08T15:13:03Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/IngestConfig')]",
-				"[concat(variables('factoryId'), '/datasets/WWI')]",
-				"[concat(variables('factoryId'), '/datasets/IngestParquet')]",
-				"[concat(variables('factoryId'), '/datasets/LandingPath')]"
-			]
-		},
 		{
 			"name": "[concat(parameters('factoryName'), '/pl_Master_pipeline')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
@@ -688,29 +445,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Bronz_CovidDB')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_lake_bronz",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "coviddb_bronz",
-						"fileSystem": "bronz"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_lake_bronz')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/IngestConfig')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -839,103 +573,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_lakehouse')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Source_Covid_DB')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_source",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"container": "coviddb"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_source')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/WWI')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"SchemaName": {
-						"type": "string",
-						"defaultValue": "Application"
-					},
-					"TableName": {
-						"type": "string",
-						"defaultValue": "vwCities"
-					}
-				},
-				"folder": {
-					"name": "Sources"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "CityID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "CityName",
-						"type": "nvarchar"
-					},
-					{
-						"name": "StateProvinceID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "LatestRecordedPopulation",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "LastEditedBy",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "ValidFrom",
-						"type": "datetime2",
-						"scale": 7
-					},
-					{
-						"name": "ValidTo",
-						"type": "datetime2",
-						"scale": 7
-					}
-				],
-				"typeProperties": {
-					"schema": {
-						"value": "@dataset().SchemaName",
-						"type": "Expression"
-					},
-					"table": {
-						"value": "@dataset().TableName",
-						"type": "Expression"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
 			]
 		},
 		{
@@ -1117,6 +754,30 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_on_prem_sql')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"connectionString": "[parameters('ls_on_prem_sql_connectionString')]",
+					"userName": "[parameters('ls_on_prem_sql_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('ls_on_prem_sql_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "SHIR",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/SHIR')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/ls_source')]",
