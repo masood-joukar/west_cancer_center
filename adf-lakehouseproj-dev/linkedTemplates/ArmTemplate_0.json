@@ -268,7 +268,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "dataset1 data ingestion landing_raw",
+						"name": "nb_EmployeesDB_Landing_Bronz",
 						"type": "DatabricksNotebook",
 						"dependsOn": [],
 						"policy": {
@@ -288,7 +288,7 @@
 						}
 					},
 					{
-						"name": "dataset2 data ingestion landing_raw",
+						"name": "nb_SalesDB_Landing_Bronz",
 						"type": "DatabricksNotebook",
 						"dependsOn": [],
 						"policy": {
