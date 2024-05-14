@@ -1,0 +1,39 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adf-lakehouseproj-dev"
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=swo-appsvc-dwh-sql-dev.database.windows.net;Initial Catalog=WideWorldImporters"
+		},
+		"ls_lake_bronz_accountKey": {
+			"value": ""
+		},
+		"ls_source_connectionString": {
+			"value": ""
+		},
+		"ls_archive_properties_typeProperties_url": {
+			"value": "https://archivelakehouseprojdev.dfs.core.windows.net/"
+		},
+		"ls_databricks_WS_properties_typeProperties_existingClusterId": {
+			"value": "1202-084555-aaqmz7am"
+		},
+		"ls_lake_bronz_properties_typeProperties_url": {
+			"value": "https://westcancercenterstorage.dfs.core.windows.net/"
+		},
+		"ls_lakehouse_properties_typeProperties_url": {
+			"value": "https://lakelakehouseprojdev.dfs.core.windows.net/"
+		},
+		"ls_lakehouse_keyvaults_properties_typeProperties_baseUrl": {
+			"value": "https://keyvlt-lakehouseproj-dev.vault.azure.net/"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
