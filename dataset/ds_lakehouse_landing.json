@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"folderPath": "landing/Sales_DB",
+				"folderPath": "landing/Employees_DB",
 				"fileSystem": "lakehouse"
 			},
 			"columnDelimiter": ",",
