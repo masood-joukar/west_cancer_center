@@ -12,7 +12,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "pl_source_landing",
+						"referenceName": "pl_SalesDB_source_landing",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
