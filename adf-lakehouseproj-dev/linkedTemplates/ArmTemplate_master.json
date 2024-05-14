@@ -33,6 +33,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_lakehouse_landing'"
 		},
+		"ls_DBXMainWS_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'ls_DBXMainWS'"
+		},
 		"ls_archive_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://archivelakehouseprojdev.dfs.core.windows.net/"
@@ -60,6 +64,10 @@
 		"ls_lakehouse_landing_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://lakelakehouseprojdev.dfs.core.windows.net/"
+		},
+		"ls_DBXMainWS_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0513-185816-trjy3b4f"
 		},
 		"containerUri": {
 			"type": "string",
@@ -100,6 +108,9 @@
 					"ls_lakehouse_landing_accountKey": {
 						"value": "[parameters('ls_lakehouse_landing_accountKey')]"
 					},
+					"ls_DBXMainWS_accessToken": {
+						"value": "[parameters('ls_DBXMainWS_accessToken')]"
+					},
 					"ls_on_prem_sql_connectionString": {
 						"value": "[parameters('ls_on_prem_sql_connectionString')]"
 					},
@@ -117,6 +128,9 @@
 					},
 					"ls_lakehouse_landing_properties_typeProperties_url": {
 						"value": "[parameters('ls_lakehouse_landing_properties_typeProperties_url')]"
+					},
+					"ls_DBXMainWS_properties_typeProperties_existingClusterId": {
+						"value": "[parameters('ls_DBXMainWS_properties_typeProperties_existingClusterId')]"
 					},
 					"ls_archive_properties_typeProperties_url": {
 						"value": "[parameters('ls_archive_properties_typeProperties_url')]"

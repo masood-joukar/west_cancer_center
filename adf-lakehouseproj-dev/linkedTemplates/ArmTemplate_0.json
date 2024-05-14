@@ -24,6 +24,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_lakehouse_landing'"
 		},
+		"ls_DBXMainWS_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'ls_DBXMainWS'"
+		},
 		"ls_on_prem_sql_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_on_prem_sql'",
@@ -48,6 +52,10 @@
 		"ls_lakehouse_landing_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://lakelakehouseprojdev.dfs.core.windows.net/"
+		},
+		"ls_DBXMainWS_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0513-185816-trjy3b4f"
 		},
 		"ls_archive_properties_typeProperties_url": {
 			"type": "string",
@@ -163,6 +171,84 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ls_DBXMainWS')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-7691341205792691.11.azuredatabricks.net",
+					"accessToken": {
+						"type": "SecureString",
+						"value": "[parameters('ls_DBXMainWS_accessToken')]"
+					},
+					"existingClusterId": "[parameters('ls_DBXMainWS_properties_typeProperties_existingClusterId')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_Landing_To_Bronz')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "EmployeesDB Landing-To-Bronz",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.00:10:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/West Cancer Center/Bronz/Bronz_EmployeesDB"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_DBXMainWS",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "SalesDB Landing-To-Bronz",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.00:10:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/West Cancer Center/Bronz/Bronz _SalesDB"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_DBXMainWS",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "B-Landing-To-Bronz"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-12-08T12:02:23Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_DBXMainWS')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ls_archive')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -262,73 +348,13 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_Landing_To_Bronz')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "nb_EmployeesDB_Landing_Bronz",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.00:10:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Repos/masood.joukar@softwareone.com/lakehouse/dbx/raw/dataset1_raw"
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_databricks_WS",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "nb_SalesDB_Landing_Bronz",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.00:10:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Repos/masood.joukar@softwareone.com/lakehouse/dbx/raw/dataset2_raw"
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_databricks_WS",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "B-Landing-To-Bronz"
-				},
-				"annotations": [],
-				"lastPublishTime": "2023-12-08T12:02:23Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_databricks_WS')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/pl_Bronz_To_Silver')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "dataset1 data transformation raw_strctured",
+						"name": "EmployeesDB Bronz-To-Silver",
 						"type": "DatabricksNotebook",
 						"dependsOn": [],
 						"policy": {
@@ -340,15 +366,15 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/Repos/masood.joukar@softwareone.com/lakehouse/dbx/strctured/dataset1_structured"
+							"notebookPath": "/West Cancer Center/Silver/Silver_EmployeesDB"
 						},
 						"linkedServiceName": {
-							"referenceName": "ls_databricks_WS",
+							"referenceName": "ls_DBXMainWS",
 							"type": "LinkedServiceReference"
 						}
 					},
 					{
-						"name": "dataset2 data transformation raw_strctured",
+						"name": "SalesDB Bronz-To-Silver",
 						"type": "DatabricksNotebook",
 						"dependsOn": [],
 						"policy": {
@@ -360,10 +386,10 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/Repos/masood.joukar@softwareone.com/lakehouse/dbx/strctured/dataset2_structured"
+							"notebookPath": "/West Cancer Center/Silver/Silver_SalesDB"
 						},
 						"linkedServiceName": {
-							"referenceName": "ls_databricks_WS",
+							"referenceName": "ls_DBXMainWS",
 							"type": "LinkedServiceReference"
 						}
 					}
@@ -375,10 +401,10 @@
 					"name": "C-Bronz-To-Silver"
 				},
 				"annotations": [],
-				"lastPublishTime": "2023-12-08T12:02:24Z"
+				"lastPublishTime": "2023-12-08T12:02:23Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_databricks_WS')]"
+				"[concat(variables('factoryId'), '/linkedServices/ls_DBXMainWS')]"
 			]
 		},
 		{
@@ -388,7 +414,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "dataset1 data aggregation strctured_curated",
+						"name": "HR Report Use-Case_Gold",
 						"type": "DatabricksNotebook",
 						"dependsOn": [],
 						"policy": {
@@ -400,10 +426,30 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/Repos/masood.joukar@softwareone.com/lakehouse/dbx/curated/Project: Sales Reporting/Sales Reporting Project_curated"
+							"notebookPath": "/West Cancer Center/Gold/HR Report Use-Case/HR Report"
 						},
 						"linkedServiceName": {
-							"referenceName": "ls_databricks_WS",
+							"referenceName": "ls_DBXMainWS",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Sales ML Use-Case_Gold",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.00:10:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/West Cancer Center/Gold/Sales ML Use-Case/Sales ML"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_DBXMainWS",
 							"type": "LinkedServiceReference"
 						}
 					}
@@ -418,7 +464,7 @@
 				"lastPublishTime": "2023-12-08T12:02:23Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_databricks_WS')]"
+				"[concat(variables('factoryId'), '/linkedServices/ls_DBXMainWS')]"
 			]
 		},
 		{
@@ -767,10 +813,6 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pl_Bronz_To_Silver",
-								"type": "PipelineReference"
-							},
 							"waitOnCompletion": true,
 							"parameters": {}
 						}
@@ -791,10 +833,6 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pl_Silver_To_Gold",
-								"type": "PipelineReference"
-							},
 							"waitOnCompletion": true,
 							"parameters": {}
 						}
@@ -808,9 +846,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/pl_Source_To_landing')]",
-				"[concat(variables('factoryId'), '/pipelines/pl_Landing_To_Bronz')]",
-				"[concat(variables('factoryId'), '/pipelines/pl_Bronz_To_Silver')]",
-				"[concat(variables('factoryId'), '/pipelines/pl_Silver_To_Gold')]"
+				"[concat(variables('factoryId'), '/pipelines/pl_Landing_To_Bronz')]"
 			]
 		}
 	]
