@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "EmployeesDB Landing-To-Bronz",
+				"name": "HR Report Use-Case",
 				"type": "DatabricksNotebook",
 				"dependsOn": [],
 				"policy": {
@@ -15,7 +15,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/West Cancer Center/Bronz/Bronz_EmployeesDB"
+					"notebookPath": "/West Cancer Center/Gold/HR Report Use-Case/HR Report"
 				},
 				"linkedServiceName": {
 					"referenceName": "ls_DBXMainWS",
@@ -23,7 +23,7 @@
 				}
 			},
 			{
-				"name": "SalesDB Landing-To-Bronz",
+				"name": "Sales ML Use-Case",
 				"type": "DatabricksNotebook",
 				"dependsOn": [],
 				"policy": {
@@ -35,7 +35,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/West Cancer Center/Bronz/Bronz _SalesDB"
+					"notebookPath": "/West Cancer Center/Gold/Sales ML Use-Case/Sales ML"
 				},
 				"linkedServiceName": {
 					"referenceName": "ls_DBXMainWS",
