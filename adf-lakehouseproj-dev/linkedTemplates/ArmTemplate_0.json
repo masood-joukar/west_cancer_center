@@ -28,6 +28,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_source'"
 		},
+		"ls_cloud_source_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_cloud_source'"
+		},
 		"ls_on_prem_sql_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_on_prem_sql'",
@@ -54,6 +58,10 @@
 			"defaultValue": "https://keyvlt-lakehouseproj-dev.vault.azure.net/"
 		},
 		"ls_lakehouse_landing_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://lakelakehouseprojdev.dfs.core.windows.net/"
+		},
+		"ls_cloud_source_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://lakelakehouseprojdev.dfs.core.windows.net/"
 		},
@@ -185,6 +193,23 @@
 			"properties": {
 				"type": "SelfHosted",
 				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_cloud_source')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('ls_cloud_source_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('ls_cloud_source_accountKey')]"
+					}
+				}
 			},
 			"dependsOn": []
 		},
@@ -382,7 +407,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"folderPath": "landing/Employees_DB",
+						"folderPath": "landing/Sales_DB",
 						"fileSystem": "lakehouse"
 					},
 					"columnDelimiter": ",",
@@ -465,6 +490,38 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/SHIR')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_source_cloud')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_cloud_source",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "onprem"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "SalesQuotaKey;EmployeeKey;DateKey;SalesAmountQuota",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_cloud_source')]"
 			]
 		},
 		{
@@ -695,9 +752,16 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "SqlServerSource",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFileName": "*",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
 							},
 							"sink": {
 								"type": "DelimitedTextSink",
@@ -722,7 +786,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "ds_sql_onPrem",
+								"referenceName": "ds_source_cloud",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -747,7 +811,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_sql_onPrem')]",
-				"[concat(variables('factoryId'), '/datasets/ds_lakehouse_landing')]"
+				"[concat(variables('factoryId'), '/datasets/ds_lakehouse_landing')]",
+				"[concat(variables('factoryId'), '/datasets/ds_source_cloud')]"
 			]
 		},
 		{

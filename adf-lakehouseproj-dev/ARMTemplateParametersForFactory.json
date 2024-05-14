@@ -26,6 +26,9 @@
 		"ls_source_connectionString": {
 			"value": ""
 		},
+		"ls_cloud_source_accountKey": {
+			"value": ""
+		},
 		"ls_DBXMainWS_properties_typeProperties_existingClusterId": {
 			"value": "0513-185816-trjy3b4f"
 		},
@@ -49,6 +52,9 @@
 		},
 		"ls_on_prem_sql_properties_typeProperties_userName": {
 			"value": "DOMAIN\\masood.joukar"
+		},
+		"ls_cloud_source_properties_typeProperties_url": {
+			"value": "https://lakelakehouseprojdev.dfs.core.windows.net/"
 		}
 	}
 }
