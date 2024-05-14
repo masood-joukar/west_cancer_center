@@ -1,0 +1,23 @@
+{
+	"name": "ds_landing_employee",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_landing_employees",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "landing/Employees_DB",
+				"fileSystem": "lakehouse"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

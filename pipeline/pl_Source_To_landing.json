@@ -49,7 +49,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "ds_lakehouse_landing",
+						"referenceName": "ds_landing_employee",
 						"type": "DatasetReference"
 					}
 				]
