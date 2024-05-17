@@ -57,6 +57,10 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_Bronz_To_Silver",
+						"type": "PipelineReference"
+					},
 					"waitOnCompletion": true
 				}
 			},
